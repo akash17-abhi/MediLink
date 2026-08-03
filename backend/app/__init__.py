@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 
 from .config import Config
 from .extensions import (
@@ -20,6 +20,9 @@ def create_app():
     jwt.init_app(app)
     cors.init_app(app)
     socketio.init_app(app)
+    from app.routes.auth import auth_bp
+
+    app.register_blueprint(auth_bp)
 
     @app.route("/")
     def home():

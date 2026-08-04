@@ -39,3 +39,7 @@ class AuthService:
             return None, "Invalid password"
 
         return user, None
+
+    @staticmethod
+    def get_user_by_id(user_id):
+        return User.query.get(user_id)

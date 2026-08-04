@@ -129,6 +129,13 @@ class Hospital(BaseModel):
         db.Boolean,
         default=True
     )
+    doctors = db.relationship(
+    "Doctor",
+    back_populates="hospital",
+    lazy=True,
+    cascade="all, delete-orphan"
+)
 
     def __repr__(self):
         return f"<Hospital {self.name}>"
+    

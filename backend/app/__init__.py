@@ -28,9 +28,11 @@ def create_app():
     # Register blueprints
     from app.routes.auth import auth_bp
     from app.routes.hospital import hospital_bp
+    from app.routes.doctor import doctor_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(hospital_bp)
+    app.register_blueprint(doctor_bp)
 
     @app.route("/")
     def home():

@@ -1,0 +1,31 @@
+def hospital_to_dict(hospital):
+
+    return {
+        "id": hospital.id,
+        "name": hospital.name,
+        "registration_number": hospital.registration_number,
+        "hospital_type": hospital.hospital_type,
+        "email": hospital.email,
+        "phone": hospital.phone,
+        "emergency_contact": hospital.emergency_contact,
+        "website": hospital.website,
+        "address": hospital.address,
+        "city": hospital.city,
+        "state": hospital.state,
+        "pincode": hospital.pincode,
+        "latitude": hospital.latitude,
+        "longitude": hospital.longitude,
+        "total_beds": hospital.total_beds,
+        "icu_beds": hospital.icu_beds,
+        "emergency_beds": hospital.emergency_beds,
+        "operation_theatres": hospital.operation_theatres,
+        "opening_time": hospital.opening_time,
+        "closing_time": hospital.closing_time,
+        "is_24x7": hospital.is_24x7,
+        "logo": hospital.logo,
+        "banner": hospital.banner,
+        "is_verified": hospital.is_verified,
+        "is_active": hospital.is_active,
+        "created_at": hospital.created_at,
+        "updated_at": hospital.updated_at
+    }

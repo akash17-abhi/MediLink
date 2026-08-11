@@ -15,11 +15,15 @@ def seed_roles():
         },
         {
             "name": "Patient",
-            "description": "Normal User"
+            "description": "Patient / Normal User"
         },
         {
             "name": "Hospital",
             "description": "Hospital / Nursing Home"
+        },
+        {
+            "name": "Laboratory",
+            "description": "Laboratory / Diagnostic Center"
         },
         {
             "name": "Ambulance Owner",
@@ -27,14 +31,36 @@ def seed_roles():
         }
     ]
 
+    created_count = 0
+
     for role_data in roles:
 
-        role = Role.query.filter_by(name=role_data["name"]).first()
+        role = Role.query.filter_by(
+            name=role_data["name"]
+        ).first()
 
         if not role:
 
-            db.session.add(Role(**role_data))
+            db.session.add(
+                Role(**role_data)
+            )
+
+            created_count += 1
+
+            print(
+                f"✅ Created role: {role_data['name']}"
+            )
+
+        else:
+
+            print(
+                f"ℹ️ Role already exists: {role_data['name']}"
+            )
 
     db.session.commit()
 
-    print("✅ Default roles created successfully.")
+    print()
+    print(
+        f"✅ Role seeding completed. "
+        f"{created_count} new role(s) created."
+    )

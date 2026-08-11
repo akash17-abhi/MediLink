@@ -4,7 +4,11 @@ from app.schemas.doctor_schema import (
     validate_doctor,
     doctor_to_dict
 )
+
 from app.services.doctor_service import DoctorService
+
+from app.utils.role_required import role_required
+
 
 doctor_bp = Blueprint(
     "doctor",
@@ -13,10 +17,16 @@ doctor_bp = Blueprint(
 )
 
 
+# =========================================================
+# CREATE DOCTOR
+# Admin only
+# =========================================================
+
 @doctor_bp.post("/")
+@role_required("Admin")
 def create_doctor():
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     valid, message = validate_doctor(data)
 
@@ -41,7 +51,13 @@ def create_doctor():
     }, 201
 
 
+# =========================================================
+# GET ALL DOCTORS
+# Admin, Hospital and Doctor
+# =========================================================
+
 @doctor_bp.get("/")
+@role_required("Admin", "Hospital", "Doctor")
 def get_all():
 
     doctors = DoctorService.get_all()
@@ -53,10 +69,16 @@ def get_all():
             doctor_to_dict(d)
             for d in doctors
         ]
-    }
+    }, 200
 
+
+# =========================================================
+# GET ONE DOCTOR
+# Admin, Hospital and Doctor
+# =========================================================
 
 @doctor_bp.get("/<int:doctor_id>")
+@role_required("Admin", "Hospital", "Doctor")
 def get_one(doctor_id):
 
     doctor = DoctorService.get_by_id(doctor_id)
@@ -70,13 +92,19 @@ def get_one(doctor_id):
     return {
         "success": True,
         "doctor": doctor_to_dict(doctor)
-    }
+    }, 200
 
+
+# =========================================================
+# UPDATE DOCTOR
+# Admin only
+# =========================================================
 
 @doctor_bp.put("/<int:doctor_id>")
+@role_required("Admin")
 def update_doctor(doctor_id):
 
-    data = request.get_json()
+    data = request.get_json() or {}
 
     doctor = DoctorService.update(
         doctor_id,
@@ -93,10 +121,16 @@ def update_doctor(doctor_id):
         "success": True,
         "message": "Doctor updated successfully",
         "doctor": doctor_to_dict(doctor)
-    }
+    }, 200
 
+
+# =========================================================
+# DELETE DOCTOR
+# Admin only
+# =========================================================
 
 @doctor_bp.delete("/<int:doctor_id>")
+@role_required("Admin")
 def delete_doctor(doctor_id):
 
     deleted = DoctorService.delete(doctor_id)
@@ -110,4 +144,4 @@ def delete_doctor(doctor_id):
     return {
         "success": True,
         "message": "Doctor deleted successfully"
-    }
+    }, 200

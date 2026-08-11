@@ -3,9 +3,17 @@ from .base_model import BaseModel
 
 
 class Doctor(BaseModel):
+
     __tablename__ = "doctors"
 
-    full_name = db.Column(db.String(100), nullable=False)
+    # =========================================================
+    # BASIC INFORMATION
+    # =========================================================
+
+    full_name = db.Column(
+        db.String(100),
+        nullable=False
+    )
 
     email = db.Column(
         db.String(120),
@@ -13,14 +21,22 @@ class Doctor(BaseModel):
         nullable=False
     )
 
-    phone = db.Column(db.String(20))
+    phone = db.Column(
+        db.String(20)
+    )
+
+    # =========================================================
+    # PROFESSIONAL INFORMATION
+    # =========================================================
 
     specialization = db.Column(
         db.String(100),
         nullable=False
     )
 
-    qualification = db.Column(db.String(200))
+    qualification = db.Column(
+        db.String(200)
+    )
 
     experience = db.Column(
         db.Integer,
@@ -32,12 +48,22 @@ class Doctor(BaseModel):
         default=0
     )
 
-    profile_photo = db.Column(db.String(255))
+    profile_photo = db.Column(
+        db.String(255)
+    )
+
+    # =========================================================
+    # STATUS
+    # =========================================================
 
     is_active = db.Column(
         db.Boolean,
         default=True
     )
+
+    # =========================================================
+    # HOSPITAL RELATIONSHIP
+    # =========================================================
 
     hospital_id = db.Column(
         db.Integer,
@@ -49,6 +75,21 @@ class Doctor(BaseModel):
         "Hospital",
         back_populates="doctors"
     )
+
+    # =========================================================
+    # DOCTOR SCHEDULE RELATIONSHIP
+    # =========================================================
+
+    schedules = db.relationship(
+        "DoctorSchedule",
+        back_populates="doctor",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    # =========================================================
+    # REPRESENTATION
+    # =========================================================
 
     def __repr__(self):
         return f"<Doctor {self.full_name}>"

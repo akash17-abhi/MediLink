@@ -3,9 +3,13 @@ from .base_model import BaseModel
 
 
 class Hospital(BaseModel):
+
     __tablename__ = "hospitals"
 
-    # Basic Information
+    # =========================================================
+    # BASIC INFORMATION
+    # =========================================================
+
     name = db.Column(
         db.String(150),
         nullable=False
@@ -26,7 +30,10 @@ class Hospital(BaseModel):
         db.Text
     )
 
-    # Contact Information
+    # =========================================================
+    # CONTACT INFORMATION
+    # =========================================================
+
     email = db.Column(
         db.String(120),
         unique=True,
@@ -46,7 +53,10 @@ class Hospital(BaseModel):
         db.String(255)
     )
 
-    # Address
+    # =========================================================
+    # ADDRESS
+    # =========================================================
+
     address = db.Column(
         db.Text,
         nullable=False
@@ -75,7 +85,10 @@ class Hospital(BaseModel):
         db.Float
     )
 
-    # Hospital Capacity
+    # =========================================================
+    # HOSPITAL CAPACITY
+    # =========================================================
+
     total_beds = db.Column(
         db.Integer,
         default=0
@@ -96,7 +109,10 @@ class Hospital(BaseModel):
         default=0
     )
 
-    # Working Hours
+    # =========================================================
+    # WORKING HOURS
+    # =========================================================
+
     opening_time = db.Column(
         db.String(10)
     )
@@ -110,7 +126,10 @@ class Hospital(BaseModel):
         default=False
     )
 
-    # Media
+    # =========================================================
+    # MEDIA
+    # =========================================================
+
     logo = db.Column(
         db.String(255)
     )
@@ -119,7 +138,10 @@ class Hospital(BaseModel):
         db.String(255)
     )
 
-    # Status
+    # =========================================================
+    # STATUS
+    # =========================================================
+
     is_verified = db.Column(
         db.Boolean,
         default=False
@@ -129,13 +151,36 @@ class Hospital(BaseModel):
         db.Boolean,
         default=True
     )
+
+    # =========================================================
+    # HOSPITAL OWNER / USER
+    # =========================================================
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=True
+    )
+
+    user = db.relationship(
+        "User",
+        back_populates="hospital"
+    )
+
+    # =========================================================
+    # DOCTORS
+    # =========================================================
+
     doctors = db.relationship(
-    "Doctor",
-    back_populates="hospital",
-    lazy=True,
-    cascade="all, delete-orphan"
-)
+        "Doctor",
+        back_populates="hospital",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    # =========================================================
+    # REPRESENTATION
+    # =========================================================
 
     def __repr__(self):
         return f"<Hospital {self.name}>"
-    

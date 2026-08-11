@@ -3,9 +3,17 @@ from .base_model import BaseModel
 
 
 class User(BaseModel):
+
     __tablename__ = "users"
 
-    full_name = db.Column(db.String(100), nullable=False)
+    # =========================================================
+    # BASIC INFORMATION
+    # =========================================================
+
+    full_name = db.Column(
+        db.String(100),
+        nullable=False
+    )
 
     email = db.Column(
         db.String(120),
@@ -23,11 +31,78 @@ class User(BaseModel):
         default=True
     )
 
+    # =========================================================
+    # EMAIL VERIFICATION
+    # =========================================================
+
+    is_email_verified = db.Column(
+        db.Boolean,
+        default=False,
+        nullable=False,
+        server_default="0"
+    )
+
+    verification_code = db.Column(
+        db.String(6),
+        nullable=True
+    )
+
+    verification_code_expires_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    # =========================================================
+    # LOGIN OTP
+    # =========================================================
+
+    login_otp = db.Column(
+        db.String(6),
+        nullable=True
+    )
+
+    login_otp_expires_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    # =========================================================
+    # PASSWORD RESET
+    # =========================================================
+
+    reset_password_otp = db.Column(
+        db.String(6),
+        nullable=True
+    )
+
+    reset_password_otp_expires_at = db.Column(
+        db.DateTime,
+        nullable=True
+    )
+
+    # =========================================================
+    # ROLES
+    # =========================================================
+
     roles = db.relationship(
         "Role",
         secondary="user_roles",
         back_populates="users"
     )
+
+    # =========================================================
+    # HOSPITAL
+    # =========================================================
+
+    hospital = db.relationship(
+        "Hospital",
+        back_populates="user",
+        uselist=False
+    )
+
+    # =========================================================
+    # REPRESENTATION
+    # =========================================================
 
     def __repr__(self):
         return f"<User {self.email}>"

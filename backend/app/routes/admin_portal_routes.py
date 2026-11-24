@@ -633,6 +633,12 @@ def purge_platform_cache():
 @role_required("Admin")
 def sync_bed_inventory():
     """Recalculate and synchronize hospital bed counts across all facilities."""
+    try:
+        from seed import seed_database
+        seed_database(reset=False)
+    except Exception as e:
+        print(f"Sync error: {e}")
+
     hospitals = Hospital.query.all()
     updated = 0
     for h in hospitals:

@@ -130,17 +130,20 @@ def create_app():
 
     jwt.init_app(app)
 
-    # Enable CORS for frontend domain (React on Vite)
+    # Enable CORS for frontend domains (Vercel, localhost, and production)
     cors.init_app(
         app,
-        resources={r"/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}},
-        supports_credentials=True
+        resources={r"/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+            "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+        }}
     )
 
     # Enable SocketIO CORS
     socketio.init_app(
         app,
-        cors_allowed_origins=["http://localhost:5173", "http://127.0.0.1:5173"]
+        cors_allowed_origins="*"
     )
 
     # =====================================================

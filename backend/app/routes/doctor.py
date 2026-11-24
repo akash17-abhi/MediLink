@@ -81,7 +81,9 @@ def get_all():
 @role_required("Admin", "Hospital", "Doctor")
 def get_one(doctor_id):
 
-    doctor = DoctorService.get_by_id(doctor_id)
+    doctor = DoctorService.get_by_id(
+        doctor_id
+    )
 
     if not doctor:
         return {
@@ -133,7 +135,9 @@ def update_doctor(doctor_id):
 @role_required("Admin")
 def delete_doctor(doctor_id):
 
-    deleted = DoctorService.delete(doctor_id)
+    deleted = DoctorService.delete(
+        doctor_id
+    )
 
     if not deleted:
         return {

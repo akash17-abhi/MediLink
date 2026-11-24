@@ -1,10 +1,29 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+
+# Python virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Database files
 *.sqlite3
 *.db
-.env
-venv/
+
+# Flask instance folder
+instance/
+
+# Migrations cache
+.mypy_cache/
+.pytest_cache/
 
 # Node
 node_modules/
@@ -25,3 +44,4 @@ Thumbs.db
 # Coverage
 .coverage
 htmlcov/
+.pytest_cache/

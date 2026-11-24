@@ -6,6 +6,7 @@ from .doctor_repository import DoctorRepository
 from .patient_repository import PatientRepository  # Add this
 from .medical_record_repository import MedicalRecordRepository
 from .notification_repository import NotificationRepository
+from .bed_repository import BedRepository
 __all__ = [
     'BaseRepository',
     'HospitalRepository',
@@ -13,4 +14,5 @@ __all__ = [
     'PatientRepository',
     'MedicalRecordRepository',
     'NotificationRepository',  # Add this
+    'BedRepository',
 ]

@@ -7,27 +7,40 @@ BASE_DIR = os.path.abspath(
 
 
 class Config:
-    # Flask
+
+    # =========================================================
+    # FLASK
+    # =========================================================
+
     SECRET_KEY = os.getenv(
         "SECRET_KEY",
         "medilink-development-secret-key"
     )
 
-    # SQLite Database
-    SQLALCHEMY_DATABASE_URI = (
-        "sqlite:///"
-        + os.path.join(BASE_DIR, "medilink.db")
+    # =========================================================
+    # DATABASE CONFIGURATION (Default to SQLite for instant local run)
+    # =========================================================
+
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        "sqlite:///" + os.path.join(BASE_DIR, "medilink.db").replace("\\", "/")
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # =========================================================
     # JWT
+    # =========================================================
+
     JWT_SECRET_KEY = os.getenv(
         "JWT_SECRET_KEY",
         "medilink-jwt-secret-key"
     )
 
-    # Email Configuration
+    # =========================================================
+    # EMAIL CONFIGURATION
+    # =========================================================
+
     MAIL_SERVER = os.getenv(
         "MAIL_SERVER",
         "smtp.gmail.com"

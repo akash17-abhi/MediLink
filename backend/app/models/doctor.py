@@ -6,6 +6,7 @@ class Doctor(BaseModel):
 
     __tablename__ = "doctors"
 
+
     # =========================================================
     # BASIC INFORMATION
     # =========================================================
@@ -24,6 +25,7 @@ class Doctor(BaseModel):
     phone = db.Column(
         db.String(20)
     )
+
 
     # =========================================================
     # PROFESSIONAL INFORMATION
@@ -52,6 +54,7 @@ class Doctor(BaseModel):
         db.String(255)
     )
 
+
     # =========================================================
     # STATUS
     # =========================================================
@@ -60,6 +63,7 @@ class Doctor(BaseModel):
         db.Boolean,
         default=True
     )
+
 
     # =========================================================
     # HOSPITAL RELATIONSHIP
@@ -76,6 +80,7 @@ class Doctor(BaseModel):
         back_populates="doctors"
     )
 
+
     # =========================================================
     # DOCTOR SCHEDULE RELATIONSHIP
     # =========================================================
@@ -87,9 +92,11 @@ class Doctor(BaseModel):
         cascade="all, delete-orphan"
     )
 
+
     # =========================================================
     # REPRESENTATION
     # =========================================================
 
     def __repr__(self):
+
         return f"<Doctor {self.full_name}>"

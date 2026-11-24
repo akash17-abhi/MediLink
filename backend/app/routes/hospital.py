@@ -25,31 +25,43 @@ def create_hospital():
     data = request.get_json()
 
     if not data:
+
         return {
             "success": False,
             "message": "Request body is required."
         }, 400
 
-    valid, message = validate_hospital(data)
+
+    valid, message = validate_hospital(
+        data
+    )
 
     if not valid:
+
         return {
             "success": False,
             "message": message
         }, 400
 
-    hospital, error = HospitalService.create_hospital(data)
+
+    hospital, error = HospitalService.create_hospital(
+        data
+    )
 
     if error:
+
         return {
             "success": False,
             "message": error
         }, 409
 
+
     return {
         "success": True,
         "message": "Hospital created successfully",
-        "hospital": hospital_to_dict(hospital)
+        "hospital": hospital_to_dict(
+            hospital
+        )
     }, 201
 
 
@@ -69,7 +81,7 @@ def get_all_hospitals():
             hospital_to_dict(h)
             for h in hospitals
         ]
-    }
+    }, 200
 
 
 # =========================================================
@@ -84,15 +96,19 @@ def get_hospital(hospital_id):
     )
 
     if not hospital:
+
         return {
             "success": False,
             "message": "Hospital not found"
         }, 404
 
+
     return {
         "success": True,
-        "hospital": hospital_to_dict(hospital)
-    }
+        "hospital": hospital_to_dict(
+            hospital
+        )
+    }, 200
 
 
 # =========================================================
@@ -108,29 +124,36 @@ def update_hospital(hospital_id):
     )
 
     if not hospital:
+
         return {
             "success": False,
             "message": "Hospital not found"
         }, 404
 
+
     data = request.get_json()
 
     if not data:
+
         return {
             "success": False,
             "message": "Request body is required."
         }, 400
+
 
     hospital = HospitalService.update_hospital(
         hospital,
         data
     )
 
+
     return {
         "success": True,
         "message": "Hospital updated successfully",
-        "hospital": hospital_to_dict(hospital)
-    }
+        "hospital": hospital_to_dict(
+            hospital
+        )
+    }, 200
 
 
 # =========================================================
@@ -146,17 +169,22 @@ def delete_hospital(hospital_id):
     )
 
     if not hospital:
+
         return {
             "success": False,
             "message": "Hospital not found"
         }, 404
 
-    HospitalService.delete_hospital(hospital)
+
+    HospitalService.delete_hospital(
+        hospital
+    )
+
 
     return {
         "success": True,
         "message": "Hospital deleted successfully"
-    }
+    }, 200
 
 
 # =========================================================
@@ -164,58 +192,72 @@ def delete_hospital(hospital_id):
 # ADMIN ONLY
 # =========================================================
 
-@hospital_bp.post("/<int:hospital_id>/assign-user")
+@hospital_bp.post(
+    "/<int:hospital_id>/assign-user"
+)
 @role_required("Admin")
 def assign_hospital_to_user(hospital_id):
 
     data = request.get_json()
 
     if not data:
+
         return {
             "success": False,
             "message": "Request body is required."
         }, 400
 
+
     user_id = data.get("user_id")
 
     if not user_id:
+
         return {
             "success": False,
             "message": "user_id is required."
         }, 400
 
+
     try:
+
         user_id = int(user_id)
 
-    except (TypeError, ValueError):
+    except (
+        TypeError,
+        ValueError
+    ):
 
         return {
             "success": False,
             "message": "user_id must be an integer."
         }, 400
 
+
     hospital, error = HospitalService.assign_hospital_to_user(
         hospital_id,
         user_id
     )
 
+
     if error:
-        status_code = 404 if (
-            error in [
-                "Hospital not found.",
-                "User not found."
-            ]
-        ) else 409
+
+        status_code = 404 if error in [
+            "Hospital not found.",
+            "User not found."
+        ] else 409
 
         return {
             "success": False,
             "message": error
         }, status_code
 
+
     return {
         "success": True,
         "message": "Hospital assigned to user successfully",
-        "hospital": hospital_to_dict(hospital)
+        "hospital": hospital_to_dict(
+            hospital
+        )
     }, 200
 
 
@@ -224,27 +266,37 @@ def assign_hospital_to_user(hospital_id):
 # ADMIN ONLY
 # =========================================================
 
-@hospital_bp.delete("/<int:hospital_id>/assign-user")
+@hospital_bp.delete(
+    "/<int:hospital_id>/assign-user"
+)
 @role_required("Admin")
-def unassign_hospital_from_user(hospital_id):
+def unassign_hospital_from_user(
+    hospital_id
+):
 
     hospital, error = HospitalService.unassign_hospital_from_user(
         hospital_id
     )
 
+
     if error:
 
-        status_code = 404 if (
-            error == "Hospital not found."
-        ) else 409
+        status_code = (
+            404
+            if error == "Hospital not found."
+            else 409
+        )
 
         return {
             "success": False,
             "message": error
         }, status_code
 
+
     return {
         "success": True,
         "message": "Hospital unassigned from user successfully",
-        "hospital": hospital_to_dict(hospital)
+        "hospital": hospital_to_dict(
+            hospital
+        )
     }, 200

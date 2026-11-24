@@ -24,7 +24,13 @@ prescription_bp = Blueprint(
 @prescription_bp.post("/")
 def create_prescription():
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
+
+    if not data:
+        return {
+            "success": False,
+            "message": "Request body is required"
+        }, 400
 
     valid, message = validate_prescription(data)
 
@@ -104,7 +110,13 @@ def get_one(prescription_id):
 @prescription_bp.put("/<int:prescription_id>")
 def update_prescription(prescription_id):
 
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
+
+    if not data:
+        return {
+            "success": False,
+            "message": "Request body is required"
+        }, 400
 
     prescription, error = PrescriptionService.update(
         prescription_id,
@@ -112,19 +124,10 @@ def update_prescription(prescription_id):
     )
 
     if error:
-        status_code = 404
-
-        if error in [
-            "Patient not found",
-            "Doctor not found",
-            "Medical Record not found"
-        ]:
-            status_code = 404
-
         return {
             "success": False,
             "message": error
-        }, status_code
+        }, 404
 
     return {
         "success": True,

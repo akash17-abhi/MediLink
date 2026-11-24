@@ -1,0 +1,57 @@
+symptoms,department
+"chest pain, pressure in chest, radiating pain to left shoulder and jaw, sweating",Cardiology
+"irregular heartbeat, palpitations, rapid pulse rate, flutter in chest",Cardiology
+"shortness of breath on walking, swollen ankles, fatigue, heart fluttering",Cardiology
+"high blood pressure, angina, heaviness in chest during exertion",Cardiology
+"burning chest tightness, fainting spells, breathlessness while lying flat",Cardiology
+"dizziness after exercise, cold sweats, mild chest discomfort",Cardiology
+"rapid heart rate, lightheadedness, chest pounding sensation",Cardiology
+"knee pain, difficulty walking, joint swelling, morning stiffness",Orthopedics
+"severe lower back pain, spine stiffness, inability to bend",Orthopedics
+"bone fracture after fall, severe swelling and deformity in wrist",Orthopedics
+"shoulder dislocation, rotator cuff injury, joint clicking sound",Orthopedics
+"hip pain while sitting, arthritis in fingers, painful knee joints",Orthopedics
+"twisted ankle, ligament tear, swelling in foot, unable to bear weight",Orthopedics
+"neck pain radiating to arm, cervical spondylosis, muscle spasm in back",Orthopedics
+"persistent high fever, chills, body ache, mild cough, general weakness",General Medicine
+"unexplained weight loss, chronic fatigue, mild fever in evenings, loss of appetite",General Medicine
+"seasonal flu, runny nose, sore throat, mild body temperature, headache",General Medicine
+"viral fever with dehydration, shivering, general malaise, dry mouth",General Medicine
+"uncontrolled diabetes, frequent urination, excessive thirst, dizziness",General Medicine
+"mild throat infection, cold and cough, body shivering, general discomfort",General Medicine
+"weakness after viral infection, pale skin, lack of stamina, general checkup",General Medicine
+"burning stomach pain, acid reflux, heartburn, indigestion after meals",Gastroenterology
+"severe abdominal cramps, frequent loose watery stools, vomiting, dehydration",Gastroenterology
+"yellow eyes, dark urine, pale stools, jaundice, liver pain",Gastroenterology
+"bloating, excessive gas, difficulty digesting food, constipation",Gastroenterology
+"vomiting blood, black tarry stools, sharp pain in upper abdomen",Gastroenterology
+"nausea, persistent belching, stomach ulcers, burning sensation in food pipe",Gastroenterology
+"pain in lower right abdomen, nausea, fever, suspected appendicitis",Gastroenterology
+"throbbing one-sided headache, sensitivity to bright light and sound, aura, migraine",Neurology
+"sudden numbness in right side of body, slurred speech, facial drooping",Neurology
+"epileptic seizure, convulsion, loss of consciousness, involuntary jerking",Neurology
+"chronic tremors in hands, slow movement, difficulty balancing, Parkinsonism",Neurology
+"memory loss, confusion, disorientation, severe persistent vertigo",Neurology
+"tingling and burning sensation in feet and hands, peripheral neuropathy",Neurology
+"unbearable cluster headache, double vision, loss of motor coordination",Neurology
+"red itchy skin rash, dry scaly patches, eczema on elbows and knees",Dermatology
+"severe acne, pimples on face and back, oily skin, cystic inflammation",Dermatology
+"fungal ringworm infection, intense itching between toes, red circular patches",Dermatology
+"hives, allergic skin flare up, swelling on lips, itchy welts on body",Dermatology
+"hair loss, bald patches, severe dandruff, scalp scaling and irritation",Dermatology
+"dark pigment spots, abnormal mole growth, peeling skin on palms",Dermatology
+"psoriasis plaques with silvery scales, cracking skin, itchy lesions",Dermatology
+"toddler continuous crying, high fever, refusing milk, lethargy",Pediatrics
+"child continuous coughing at night, breathing difficulty, wheezing sound",Pediatrics
+"infant vomiting after feeding, green stools, severe diaper rash",Pediatrics
+"child chickenpox rash, watery blisters, mild fever, irritability",Pediatrics
+"school going child ear pain, pulling ear, high body temperature",Pediatrics
+"baby not gaining weight, developmental delay, frequent crying and colic",Pediatrics
+"child measles spots, red eyes, fever, runny nose in 3 year old",Pediatrics
+"unbearable crushing chest pain, profuse sweating, collapse, pulseless",Emergency Medicine
+"heavy arterial bleeding from accident, deep laceration, hypovolemic shock",Emergency Medicine
+"sudden cardiac arrest, unresponsive, blue lips, severe trauma",Emergency Medicine
+"severe road traffic accident, head trauma with unconsciousness, massive blood loss",Emergency Medicine
+"acute severe asthma attack, gasping for air, inability to speak words",Emergency Medicine
+"poison ingestion, foaming at mouth, severe seizure, unresponsive patient",Emergency Medicine
+"third degree burn injuries, shock, severe smoke inhalation",Emergency Medicine

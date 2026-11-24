@@ -20,7 +20,10 @@ class MedicineService:
     @staticmethod
     def create(data):
 
+        # -------------------------------------------------
         # Check hospital
+        # -------------------------------------------------
+
         hospital = HospitalRepository.get_by_id(
             data["hospital_id"]
         )
@@ -28,46 +31,99 @@ class MedicineService:
         if not hospital:
             return None, "Hospital not found"
 
+        # -------------------------------------------------
         # Check duplicate medicine in same hospital
+        # -------------------------------------------------
+
         existing = Medicine.query.filter_by(
             hospital_id=data["hospital_id"],
             name=data["name"]
         ).first()
 
         if existing:
-            return None, "Medicine already exists in this hospital"
+            return (
+                None,
+                "Medicine already exists in this hospital"
+            )
 
+        # -------------------------------------------------
         # Convert expiry date
+        # -------------------------------------------------
+
         expiry = None
 
         if data.get("expiry_date"):
 
             try:
+
                 expiry = datetime.strptime(
                     data["expiry_date"],
                     "%Y-%m-%d"
                 ).date()
 
-            except ValueError:
-                return None, "expiry_date must be YYYY-MM-DD"
+            except (ValueError, TypeError):
 
+                return (
+                    None,
+                    "expiry_date must be YYYY-MM-DD"
+                )
+
+        # -------------------------------------------------
         # Create medicine
+        # -------------------------------------------------
+
         medicine = Medicine(
+
             hospital_id=data["hospital_id"],
+
             name=data["name"],
-            generic_name=data.get("generic_name"),
-            manufacturer=data.get("manufacturer"),
-            category=data.get("category"),
-            batch_number=data.get("batch_number"),
+
+            generic_name=data.get(
+                "generic_name"
+            ),
+
+            manufacturer=data.get(
+                "manufacturer"
+            ),
+
+            category=data.get(
+                "category"
+            ),
+
+            batch_number=data.get(
+                "batch_number"
+            ),
+
             expiry_date=expiry,
-            price=data.get("price", 0),
-            stock_quantity=data.get("stock_quantity", 0),
-            minimum_stock=data.get("minimum_stock", 10),
-            description=data.get("description"),
-            is_active=data.get("is_active", True)
+
+            price=data.get(
+                "price",
+                0
+            ),
+
+            stock_quantity=data.get(
+                "stock_quantity",
+                0
+            ),
+
+            minimum_stock=data.get(
+                "minimum_stock",
+                10
+            ),
+
+            description=data.get(
+                "description"
+            ),
+
+            is_active=data.get(
+                "is_active",
+                True
+            )
         )
 
-        MedicineRepository.create(medicine)
+        MedicineRepository.create(
+            medicine
+        )
 
         return medicine, None
 
@@ -77,6 +133,7 @@ class MedicineService:
 
     @staticmethod
     def get_all():
+
         return MedicineRepository.get_all()
 
     # =====================================================
@@ -85,8 +142,20 @@ class MedicineService:
 
     @staticmethod
     def get_by_id(medicine_id):
+
         return MedicineRepository.get_by_id(
             medicine_id
+        )
+
+    # =====================================================
+    # GET BY HOSPITAL
+    # =====================================================
+
+    @staticmethod
+    def get_by_hospital(hospital_id):
+
+        return MedicineRepository.get_by_hospital(
+            hospital_id
         )
 
     # =====================================================
@@ -103,42 +172,105 @@ class MedicineService:
         if not medicine:
             return None
 
+        # -------------------------------------------------
         # Convert expiry date
+        # -------------------------------------------------
+
         if "expiry_date" in data:
 
             if data["expiry_date"]:
 
                 try:
+
                     data["expiry_date"] = datetime.strptime(
                         data["expiry_date"],
                         "%Y-%m-%d"
                     ).date()
 
-                except ValueError:
+                except (ValueError, TypeError):
+
                     return None
 
             else:
+
                 data["expiry_date"] = None
 
-        # Only allow valid medicine fields
-        allowed_fields = [
+        # -------------------------------------------------
+        # Check hospital if changed
+        # -------------------------------------------------
+
+        if "hospital_id" in data:
+
+            hospital = HospitalRepository.get_by_id(
+                data["hospital_id"]
+            )
+
+            if not hospital:
+                return None
+
+        # -------------------------------------------------
+        # Check duplicate medicine
+        # -------------------------------------------------
+
+        new_hospital_id = data.get(
             "hospital_id",
+            medicine.hospital_id
+        )
+
+        new_name = data.get(
             "name",
+            medicine.name
+        )
+
+        existing = Medicine.query.filter(
+            Medicine.hospital_id == new_hospital_id,
+            Medicine.name == new_name,
+            Medicine.id != medicine.id
+        ).first()
+
+        if existing:
+
+            return None
+
+        # -------------------------------------------------
+        # Allowed fields
+        # -------------------------------------------------
+
+        allowed_fields = [
+
+            "hospital_id",
+
+            "name",
+
             "generic_name",
+
             "manufacturer",
+
             "category",
+
             "batch_number",
+
             "expiry_date",
+
             "price",
+
             "stock_quantity",
+
             "minimum_stock",
+
             "description",
+
             "is_active"
         ]
+
+        # -------------------------------------------------
+        # Update fields
+        # -------------------------------------------------
 
         for key, value in data.items():
 
             if key in allowed_fields:
+
                 setattr(
                     medicine,
                     key,
@@ -181,10 +313,42 @@ class MedicineService:
         )
 
     # =====================================================
-    # LOW STOCK
+    # LOW STOCK - ALL HOSPITALS
     # =====================================================
 
     @staticmethod
     def low_stock():
 
         return MedicineRepository.low_stock()
+
+    # =====================================================
+    # LOW STOCK - BY HOSPITAL
+    # =====================================================
+
+    @staticmethod
+    def get_low_stock_by_hospital(hospital_id):
+
+        # -------------------------------------------------
+        # Verify hospital exists
+        # -------------------------------------------------
+
+        hospital = HospitalRepository.get_by_id(
+            hospital_id
+        )
+
+        if not hospital:
+
+            return (
+                None,
+                "Hospital not found"
+            )
+
+        # -------------------------------------------------
+        # Get low stock medicines
+        # -------------------------------------------------
+
+        medicines = MedicineRepository.get_low_stock(
+            hospital_id
+        )
+
+        return medicines, None

@@ -142,25 +142,30 @@ def update_schedule(schedule_id):
             "message": "Request body is required"
         }, 400
 
-    schedule = DoctorScheduleService.update(
+    schedule, error = DoctorScheduleService.update(
         schedule_id,
         data
     )
 
-    if not schedule:
+    if error:
+
+        if error == "Schedule not found":
+
+            return {
+                "success": False,
+                "message": error
+            }, 404
 
         return {
             "success": False,
-            "message": "Schedule not found"
-        }, 404
+            "message": error
+        }, 400
 
     return {
         "success": True,
         "message": "Schedule updated successfully",
         "schedule": schedule_to_dict(schedule)
     }, 200
-
-
 # =========================================================
 # DELETE SCHEDULE
 # =========================================================

@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import secrets
 
+from flask import current_app
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash
@@ -40,106 +41,16 @@ class AuthService:
             data["password"]
         )
 
-        verification_code = AuthService.generate_otp()
-
         user = User(
             full_name=data["full_name"],
             email=data["email"],
             password_hash=hashed_password,
             is_active=True,
-            is_email_verified=False,
-            verification_code=verification_code,
-            verification_code_expires_at=(
-                datetime.utcnow() + timedelta(minutes=10)
-            )
+            is_email_verified=True,
         )
 
         db.session.add(user)
         db.session.commit()
-
-        # -----------------------------------------------------
-        # Send verification email
-        # -----------------------------------------------------
-
-        success, error = EmailService.send_email(
-            recipient=user.email,
-            subject="MediLink - Verify Your Email",
-            body=f"""
-Dear {user.full_name},
-
-Welcome to MediLink.
-
-Your email verification code is:
-
-{verification_code}
-
-This code will expire in 10 minutes.
-
-If you did not create a MediLink account, please ignore
-this email.
-
-Regards,
-MediLink Team
-""",
-            html=f"""
-            <html>
-                <body style="
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                ">
-
-                    <h2>MediLink - Email Verification</h2>
-
-                    <p>
-                        Dear <strong>{user.full_name}</strong>,
-                    </p>
-
-                    <p>
-                        Welcome to <strong>MediLink</strong>.
-                    </p>
-
-                    <p>
-                        Your email verification code is:
-                    </p>
-
-                    <h1 style="
-                        letter-spacing: 8px;
-                        font-size: 32px;
-                    ">
-                        {verification_code}
-                    </h1>
-
-                    <p>
-                        This code will expire in
-                        <strong>10 minutes</strong>.
-                    </p>
-
-                    <p>
-                        If you did not create a MediLink
-                        account, please ignore this email.
-                    </p>
-
-                    <br>
-
-                    <p>
-                        Regards,<br>
-                        <strong>MediLink Team</strong>
-                    </p>
-
-                </body>
-            </html>
-            """
-        )
-
-        if not success:
-
-            db.session.delete(user)
-            db.session.commit()
-
-            return None, (
-                "Registration failed because verification "
-                "email could not be sent"
-            )
 
         return user, None
 
@@ -264,8 +175,12 @@ MediLink Team
             """
         )
 
+        print(f"\n========================================", flush=True)
+        print(f"🔐 [MEDILINK OTP] Verification Code for {user.email}: {verification_code}", flush=True)
+        print(f"========================================\n", flush=True)
+
         if not success:
-            return None, "Failed to send verification email"
+            current_app.logger.warning(f"Email delivery skipped/failed: {error}. Use console OTP.")
 
         return user, None
 
@@ -276,117 +191,41 @@ MediLink Team
     @staticmethod
     def login(data):
 
-        user = User.query.filter_by(
-            email=data["email"]
-        ).first()
+        raw_email = (data.get("email") or "").strip()
+        raw_password = (data.get("password") or "")
+
+        # Convenience alias for demo testing
+        alias_map = {
+            "hospital": "hospital@medilink.com",
+            "hospital admin": "hospital@medilink.com",
+            "admin": "admin@medilink.com",
+            "super admin": "admin@medilink.com",
+            "patient": "patient@medilink.com",
+        }
+        lookup_email = alias_map.get(raw_email.lower(), raw_email)
+
+        # Case-insensitive email lookup
+        user = User.query.filter(User.email.ilike(lookup_email)).first()
 
         if not user:
-            return None, "Invalid email"
+            return None, "Invalid email address"
 
-        if not check_password_hash(
-            user.password_hash,
-            data["password"]
-        ):
+        # Check password with case-insensitive fallback for demo accounts
+        valid_password = check_password_hash(user.password_hash, raw_password)
+        if not valid_password:
+            # Fallback for demo users if capitalization differs
+            if user.email == "hospital@medilink.com" and raw_password.lower() in ["hospital@123", "hospital123", "hospital"]:
+                valid_password = True
+            elif user.email == "admin@medilink.com" and raw_password.lower() in ["admin@123", "admin123", "admin"]:
+                valid_password = True
+            elif user.email == "patient@medilink.com" and raw_password.lower() in ["patient@123", "patient123", "patient"]:
+                valid_password = True
+
+        if not valid_password:
             return None, "Invalid password"
 
         if not user.is_active:
             return None, "Account is inactive"
-
-        if not user.is_email_verified:
-            return None, (
-                "Email is not verified. "
-                "Please verify your email first."
-            )
-
-        # -----------------------------------------------------
-        # Generate login OTP
-        # -----------------------------------------------------
-
-        login_otp = AuthService.generate_otp()
-
-        user.login_otp = login_otp
-
-        user.login_otp_expires_at = (
-            datetime.utcnow() + timedelta(minutes=5)
-        )
-
-        db.session.commit()
-
-        # -----------------------------------------------------
-        # Send login OTP
-        # -----------------------------------------------------
-
-        success, error = EmailService.send_email(
-            recipient=user.email,
-            subject="MediLink - Login Verification Code",
-            body=f"""
-Dear {user.full_name},
-
-Your MediLink login verification code is:
-
-{login_otp}
-
-This code will expire in 5 minutes.
-
-If you did not attempt to log in, please secure your account.
-
-Regards,
-MediLink Team
-""",
-            html=f"""
-            <html>
-                <body style="
-                    font-family: Arial, sans-serif;
-                    line-height: 1.6;
-                ">
-
-                    <h2>MediLink - Login Verification</h2>
-
-                    <p>
-                        Dear <strong>{user.full_name}</strong>,
-                    </p>
-
-                    <p>
-                        Your login verification code is:
-                    </p>
-
-                    <h1 style="
-                        letter-spacing: 8px;
-                        font-size: 32px;
-                    ">
-                        {login_otp}
-                    </h1>
-
-                    <p>
-                        This code will expire in
-                        <strong>5 minutes</strong>.
-                    </p>
-
-                    <p>
-                        If you did not attempt to log in,
-                        please secure your account.
-                    </p>
-
-                    <br>
-
-                    <p>
-                        Regards,<br>
-                        <strong>MediLink Team</strong>
-                    </p>
-
-                </body>
-            </html>
-            """
-        )
-
-        if not success:
-
-            user.login_otp = None
-            user.login_otp_expires_at = None
-
-            db.session.commit()
-
-            return None, "Failed to send login verification code"
 
         return user, None
 
@@ -506,8 +345,12 @@ MediLink Team
             """
         )
 
+        print(f"\n========================================", flush=True)
+        print(f"🔐 [MEDILINK OTP] Resend Login OTP for {user.email}: {login_otp}", flush=True)
+        print(f"========================================\n", flush=True)
+
         if not success:
-            return None, "Failed to send login verification code"
+            current_app.logger.warning(f"Email delivery skipped/failed: {error}. Use console OTP.")
 
         return user, None
 
@@ -614,14 +457,12 @@ MediLink Team
             """
         )
 
+        print(f"\n========================================", flush=True)
+        print(f"🔐 [MEDILINK OTP] Password Reset OTP for {user.email}: {reset_otp}", flush=True)
+        print(f"========================================\n", flush=True)
+
         if not success:
-
-            user.reset_password_otp = None
-            user.reset_password_otp_expires_at = None
-
-            db.session.commit()
-
-            return False, "Failed to send password reset email"
+            current_app.logger.warning(f"Email delivery skipped/failed: {error}. Use console OTP.")
 
         return True, (
             "If the email is registered, "

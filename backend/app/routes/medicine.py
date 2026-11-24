@@ -24,7 +24,7 @@ medicine_bp = Blueprint(
 @medicine_bp.post("/")
 def create_medicine():
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if not data:
         return {
@@ -104,12 +104,20 @@ def get_one(medicine_id):
 @medicine_bp.put("/<int:medicine_id>")
 def update_medicine(medicine_id):
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if not data:
         return {
             "success": False,
             "message": "Request body is required"
+        }, 400
+
+    valid, message = validate_medicine(data)
+
+    if not valid:
+        return {
+            "success": False,
+            "message": message
         }, 400
 
     medicine = MedicineService.update(
@@ -182,6 +190,31 @@ def search_medicine(name):
 def low_stock():
 
     medicines = MedicineService.low_stock()
+
+    return {
+        "success": True,
+        "count": len(medicines),
+        "medicines": [
+            medicine_to_dict(m)
+            for m in medicines
+        ]
+    }
+# =========================================================
+# LOW STOCK MEDICINES BY HOSPITAL
+# =========================================================
+
+@medicine_bp.get("/low-stock/hospital/<int:hospital_id>")
+def low_stock_by_hospital(hospital_id):
+
+    medicines, error = MedicineService.get_low_stock_by_hospital(
+        hospital_id
+    )
+
+    if error:
+        return {
+            "success": False,
+            "message": error
+        }, 404
 
     return {
         "success": True,

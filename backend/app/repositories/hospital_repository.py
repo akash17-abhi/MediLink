@@ -4,6 +4,7 @@ from app.models.hospital import Hospital
 
 class HospitalRepository:
 
+
     # =========================================================
     # CREATE HOSPITAL
     # =========================================================
@@ -11,12 +12,18 @@ class HospitalRepository:
     @staticmethod
     def create(data):
 
-        hospital = Hospital(**data)
+        hospital = Hospital(
+            **data
+        )
 
-        db.session.add(hospital)
+        db.session.add(
+            hospital
+        )
+
         db.session.commit()
 
         return hospital
+
 
     # =========================================================
     # GET ALL HOSPITALS
@@ -26,6 +33,7 @@ class HospitalRepository:
     def get_all():
 
         return Hospital.query.all()
+
 
     # =========================================================
     # GET HOSPITAL BY ID
@@ -39,6 +47,7 @@ class HospitalRepository:
             hospital_id
         )
 
+
     # =========================================================
     # GET HOSPITAL BY EMAIL
     # =========================================================
@@ -50,37 +59,49 @@ class HospitalRepository:
             email=email
         ).first()
 
+
     # =========================================================
     # GET HOSPITAL BY REGISTRATION NUMBER
     # =========================================================
 
     @staticmethod
-    def get_by_registration_number(registration_number):
+    def get_by_registration_number(
+        registration_number
+    ):
 
         return Hospital.query.filter_by(
             registration_number=registration_number
         ).first()
+
 
     # =========================================================
     # UPDATE HOSPITAL
     # =========================================================
 
     @staticmethod
-    def update(hospital, data):
+    def update(
+        hospital,
+        data
+    ):
 
         for key, value in data.items():
 
-            # Only update existing Hospital model attributes
-            if hasattr(hospital, key):
+            if hasattr(
+                hospital,
+                key
+            ):
+
                 setattr(
                     hospital,
                     key,
                     value
                 )
 
+
         db.session.commit()
 
         return hospital
+
 
     # =========================================================
     # DELETE HOSPITAL
@@ -89,7 +110,9 @@ class HospitalRepository:
     @staticmethod
     def delete(hospital):
 
-        db.session.delete(hospital)
+        db.session.delete(
+            hospital
+        )
 
         db.session.commit()
 

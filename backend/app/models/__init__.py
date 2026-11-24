@@ -14,6 +14,10 @@ from .laboratory import Laboratory
 from .bill import Bill
 from .payment import Payment
 from .notification import Notification
+from .ambulance import Ambulance
+from .emergency import Emergency
+from .bed import Bed
+from .specialization import Specialization
 
 __all__ = [
     "BaseModel",
@@ -31,5 +35,9 @@ __all__ = [
     "Laboratory",
     "Bill",
     "Payment",
-    "Notification"
+    "Notification",
+    "Ambulance",
+    "Emergency",
+    "Bed",
+    "Specialization"
 ]

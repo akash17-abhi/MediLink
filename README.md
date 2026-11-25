@@ -21,9 +21,5 @@ A modern healthcare ecosystem connecting hospitals, doctors, patients, ambulance
 ### Maps
 - OpenStreetMap
 - Leaflet
-
-### Real-Time
-- Socket.IO
-
 ### Real-Time
 - Socket.IO
